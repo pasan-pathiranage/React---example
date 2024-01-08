@@ -78,7 +78,7 @@ const Home = () => {
         }).then((response) => {
             return response.json();
         }).then((data) => {
-            setProducts([...products,data]);  // using Spred Operator []
+            setProducts([...products, data]);  // using Spred Operator []
             setName(null);
             setPrice(null);
             setQty(0);
@@ -90,6 +90,26 @@ const Home = () => {
 
     return (
         <>
+            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Navbar</a>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            {categories &&
+                                categories.map((category) => (
+                                    <li class="nav-item">
+                                        <Link to={`categories/${category.id}`} className="nav-link">{category.name}</Link>
+                                    </li>
+
+                                ))}
+
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+
+
             <h1>Home</h1>
 
             <ul>
@@ -114,11 +134,11 @@ const Home = () => {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Product name</label>
-                    <input type="text" required onChange={handleName} value={name}/>
+                    <input type="text" required className="form-control" onChange={handleName} value={name} />
                 </div>
                 <div>
                     <label>Product Price</label>
-                    <input type="text" required onChange={handlePrice}value={price} />
+                    <input type="text" required onChange={handlePrice} value={price} />
                 </div>
                 <div>
                     <label>Product Qty</label>
@@ -138,7 +158,7 @@ const Home = () => {
                     </select>
                 </div>
 
-                <button type="submit">Save Product</button>
+                <button className="btn btn-primary" type="submit">Save Product</button>
             </form>
 
 
