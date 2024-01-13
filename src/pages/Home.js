@@ -1,5 +1,6 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Home = () => {
 
@@ -17,28 +18,33 @@ const Home = () => {
         getCategories();
     }, [])
 
+    const navigate = useNavigate();
 
-    const getProducts = () => {
-        fetch("http://localhost:8080/products")
-            .then((response) => {
-                return response.json();
-            }).then((data) => {
-                setProducts(data);
 
-            }).catch((error) => {
-                console.log(error);
-            })
+    const getProducts = async () => {
+
+        try {
+            const response = await axios.get("http://localhost:8080/products");
+            setProducts(response.data);
+
+        } catch (error) {
+            if(error.response.status === 401){
+                navigate("/login");
+            }
+        }
+
     }
 
-    const getCategories = () => {
-        fetch("http://localhost:8080/categories")
-            .then((response) => {
-                return response.json();
-            }).then((data) => {
-                setCategories(data);
-            }).catch((error) => {
-                console.log(error);
-            })
+    const getCategories = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/categories");
+            setCategories(response.data);
+        } catch (error) {
+            if(error.response.status === 401){
+                navigate("/login");
+            }
+        }
+       
     }
 
     const handleName = (event) => {
@@ -57,7 +63,7 @@ const Home = () => {
         setCategoryId(event.target.value);
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         const data = {
@@ -67,25 +73,18 @@ const Home = () => {
             "categoryId": categoryId
         }
 
-        fetch("http://localhost:8080/products", {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/Json',
-                'Content-Type': 'application/Json'
+        const response = await axios.post("http://localhost:8080/products", data);
 
-            },
-            body: JSON.stringify(data)
-        }).then((response) => {
-            return response.json();
-        }).then((data) => {
-            setProducts([...products, data]);  // using Spred Operator []
-            setName(null);
-            setPrice(null);
-            setQty(0);
-            setCategoryId(null);
-        }).catch((error) => {
-            console.log(error);
-        })
+        setProducts([...products, response.data]);  // using Spred Operator []
+        setName(null);
+        setPrice(null);
+        setQty(0);
+        setCategoryId(null);
+
+    }
+    const handleLogout = () =>{
+        localStorage.removeItem("token");
+        navigate("/login");
     }
 
     return (
@@ -102,6 +101,12 @@ const Home = () => {
                                     </li>
 
                                 ))}
+
+                                <li class = "nav-item">
+                                    <button className="btn btn-secondary" onClick={handleLogout}>Logout</button>
+                                </li>
+
+
 
                         </ul>
                     </div>

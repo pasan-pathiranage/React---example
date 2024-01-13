@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -11,15 +12,11 @@ const SingleProduct = ()=>{
         getProductById();
     },[])
 
-    const getProductById = () => {
-        fetch(`http://localhost:8080/products/${params.id}`)
-        .then((response) =>{
-            return response.json();
-        }).then((data)=>{
-            setProduct(data); ///setting Prouct state
-        }).catch((error)=>{
-            console.log(error);
-        })
+    const getProductById = async() => {
+        
+        const response =  await axios.get(`http://localhost:8080/products/${params.id}`);
+        setProduct(response.data);
+       
     }
 
     return (

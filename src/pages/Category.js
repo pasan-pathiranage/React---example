@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
@@ -8,26 +9,16 @@ const Category = () => {
     const [category, setCategory] = useState(null);
     const [products, setProducts] = useState(null);
 
-    const getCategory = () => {
-        fetch(`http://localhost:8080/categories/${params.id}`)
-            .then((response) => {
-                return response.json();
-            }).then((data) => {
-                setCategory(data);
-            }).catch((error) => {
-                console.log(error);
-            })
+    const getCategory = async() => {
+        const response = await axios.get(`http://localhost:8080/categories/${params.id}`);
+        setCategory(response.data);
+
     }
 
-    const getProductsByCategory = () => {
-        fetch(`http://localhost:8080/categories/${params.id}/products`)
-            .then((response) => {
-                return response.json();
-            }).then((data) => {
-                setProducts(data);
-            }).catch((error) => {
-                console.log(error);
-            })
+    const getProductsByCategory = async() => {
+        const response = await axios.get(`http://localhost:8080/categories/${params.id}/products`);
+        setProducts(response.data);
+        
     }
 
     useEffect(() => {
